@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
+import com.x.model.weixin.WeixinSearchParams;
 import com.x.model.weixin.message.resp.TextMessage;
-import com.x.utils.SpringContextHolder;
 import com.x.utils.StringUtil;
 import com.x.utils.weixin.MessageUtil;
 
@@ -22,9 +22,9 @@ import com.x.utils.weixin.MessageUtil;
  * @version V1.0
  * @Date 2014-1-11下午02:41:36
  */
-public class CoreService {
+public class WeixinCoreService {
 
-	private static Logger log = Logger.getLogger(CoreService.class);
+	private static Logger log = Logger.getLogger(WeixinCoreService.class);
 
 	/**
 	 * 处理微信发来的请求
@@ -49,19 +49,21 @@ public class CoreService {
 			if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_TEXT)) {
 				// 指令消息内容
 				String order = StringUtil.ToDBC(requestMap.get("Content"));
-				
+
 				if (order.equals("?")) { // 获取住菜单帮助信息
-//					respContent = WeixinOrderGroupInit.menu;
+				// respContent = WeixinOrderGroupInit.menu;
+					respContent = "获得菜单帮助信息";
 				} else if (isQqFace(order)) {
 					// 判断用户发送的是否是单个QQ表情，是则返回该表情
 					respContent = order;
 				} else {
-//					String type = WeixinOrderGroupInit.get(order);
-//					if (type.equals("text")) {
-//						respContent = textService.getContext(StringUtil.toInt(order)).getContent();
-//					} else if (type.equals("news")) {
-//						return new NewsCoreService().processRequest(requestMap);
-//					}
+					// String type = WeixinOrderGroupInit.get(order);
+					// if (type.equals("text")) {
+					// respContent =
+					// textService.getContext(StringUtil.toInt(order)).getContent();
+					// } else if (type.equals("news")) {
+					// return new NewsCoreService().processRequest(requestMap);
+					// }
 				}
 			} else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_IMAGE)) {
 				respContent = "您发送的是图片消息！";
@@ -77,7 +79,8 @@ public class CoreService {
 				String eventType = requestMap.get("Event");
 				// 订阅
 				if (eventType.equals(MessageUtil.EVENT_TYPE_SUBSCRIBE)) {
-//					respContent = "感谢您对勤快柳儿的喜爱\n".concat(WeixinOrderGroupInit.menu);
+					// respContent =
+					// "感谢您对勤快柳儿的喜爱\n".concat(WeixinOrderGroupInit.menu);
 				} else if (eventType.equals(MessageUtil.EVENT_TYPE_UNSUBSCRIBE)) {
 					// 取消订阅
 					// TODO: 取消订阅后用户再收不到公众号发送的消息，因此不需要回复消息
@@ -85,7 +88,7 @@ public class CoreService {
 					// TODO: 自定义菜单权没有开放，暂不处理该类信息
 				}
 			}
-			respMessage=messageText(requestMap, respContent);
+			respMessage = messageText(requestMap, respContent);
 		} catch (Exception e) {
 			log.error(e);
 		}
@@ -130,6 +133,63 @@ public class CoreService {
 			result = true;
 		}
 		return result;
+	}
+
+	/**
+	 * 菜单点击处理
+	 * 
+	 * @param respContent
+	 * @param eventKey
+	 * @return
+	 */
+	private String menuClick(Map<String, String> requestMap, String respContent, String eventKey, WeixinSearchParams params) {
+		String respMessage = null;
+		int key = StringUtil.toInt(eventKey);
+		switch (key) {
+		case 11: // 游戏介绍
+			params.setMenuId(11);
+			break;
+		case 12: // 最新资讯
+			params.setMenuId(12);
+			break;
+		case 13: // 加入QQ群
+			params.setMenuId(13);
+			break;
+
+		case 21: // 最新活动
+			params.setMenuId(21);
+			break;
+		case 22: // 获奖名单
+			params.setMenuId(22);
+			break;
+		case 23: // 刮刮卡
+			params.setMenuId(23);
+			break;
+		case 24: // 绑定角色
+			params.setMenuId(24);
+			break;
+
+		case 31: // 客服电话被点击
+			params.setMenuId(31);
+			break;
+		case 32: // 游戏帮助FAQ
+			params.setMenuId(32);
+			break;
+		case 33: // 问题反馈
+			params.setMenuId(33);
+			break;
+		case 34: // 调戏蛋挞妹
+			params.setMenuId(34);
+			break;
+		case 35: // 听蛋挞唱歌
+			params.setMenuId(35);
+			break;
+		}
+		if (respMessage == null) {
+			// respMessage = new
+			// WeixinMessageCoreService().processRequest(requestMap, params);
+		}
+		return respMessage;
 	}
 
 }

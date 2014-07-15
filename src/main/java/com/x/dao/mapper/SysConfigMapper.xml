@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.x.dao.mapper.SysConfigMapper">
+	<!-- 缓存 -->
+	<cache eviction="FIFO" flushInterval="60000" size="512" readOnly="true" />
+
+	<resultMap type="com.x.model.SysConfig" id="result">
+		<id property="sysKey" column="sys_key" />
+		<result property="sysValue" column="sys_value" />
+	</resultMap>
+
+	<select id="list" resultMap="result" useCache="true">
+		SELECT sys_key,sys_value FROM
+		sys_config
+	</select>
+
+</mapper>
